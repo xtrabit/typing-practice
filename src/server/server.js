@@ -1,18 +1,39 @@
 const parser = require('body-parser');
 const express = require('express');
 const path = require('path');
+const db = require('../database/index.js');
 const port = 3000;
 let app = express();
 
+app.use(parser.json());
 app.use(express.static(__dirname + '/../../dist'));
 app.use(express.static(__dirname + '/'));
 
-// app.use(parser.json({ type: 'application/*+json' }));
+app.get('/', (req, res) => {
 
+  res.end();
+});
 
-app.get('/', function(req, res) {
+app.get('/stats', (req, res) => {
+  db.getStats('someone', (err, data) => {
+    if (err) {
+      console.log(err);
+      res.status(404).end();
+      return;
+    }
+    res.send(data);
+  });
+});
 
-  res.end()
+app.post('/stats', (req, res) => {
+  db.saveStats('someone', req.body, (err, data) => {
+    if (err) {
+      console.log(err);
+      res.status(500).end();
+      return;
+    }
+    res.status(201).end();
+  });
 });
 
 app.listen(port, () => console.log(`sever is listening on port ${port}!`));
