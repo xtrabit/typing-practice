@@ -1,18 +1,23 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import './styles.css';
+import Board from './Board';
+import Exercise from './Exercise';
+import QuickStats from './QuickStats';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: ''
+      user: 'anonymous'
     };
   }
 
   render() {
     return (
-      <div>
-        <h2>what's up</h2>
+      <div className='app-wrapper'>
+        <QuickStats />
+        <Exercise />
+        <Board />
       </div>
     );
   }
