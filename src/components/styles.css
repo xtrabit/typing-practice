@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Cutive+Mono');
+
 body {
   /*display: block;*/
 }
@@ -94,6 +96,10 @@ body {
   box-shadow: 0 0 0.2vmin 0.2vmin lightgrey;
 }
 
+.pressed {
+  background-color: lightgreen;
+}
+
 .full {
   width: 6.84%;
 }
@@ -135,18 +141,36 @@ body {
 .exercise {
   width: 100%;
   height: 100%;
-  font-size: 20px;
-  letter-spacing: 0.2vmin;
+  font-family: 'Cutive Mono', monospace;
+  font-size: 2.5vmin;
+  padding: 1vmin;
+  /*letter-spacing: 0.2vmin;*/
 }
 
-span.used {
-  background-color: #DEB887;
+span.hit {
+  background-color: #F5EEE5;
+  /*background-color: #F5E9DA;*/
+  /*background-color: #E2D4BF;*/
+  /*background-color: #DEB887;*/
 }
 
-span.mistake {
-  background-color: red;
+span.missed {
+  background-color: #fcc;
+  /*color: white;*/
+  border: solid red 1px;
+}
+
+span.error {
+  background-color: #fcc;
+  /*color: red;*/
 }
 
 span.cursor {
   border: solid black 1px;
+}
+
+span {
+  box-sizing: border-box;
+  white-space: pre-wrap;
+  padding: 0;
 }

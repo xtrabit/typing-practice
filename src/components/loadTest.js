@@ -22,6 +22,7 @@ const generateString = () => {
     total++;
   }
   str.pop();
+  str = ['a', 'b', ' ', 'c', 'd', ' ', 'e', ' '];
   return str;
 };
 

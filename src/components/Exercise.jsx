@@ -6,13 +6,10 @@ class Exercise extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      colorPressed: 'lightgreen',
-      colorNormal: 'none',
-      colorUsed: '#DEB887',
       testString: [],
       index: 0,
       test: false,
-      next: false
+      clear: false
     };
     this.time = 0;
     this.start = 0;
@@ -27,11 +24,12 @@ class Exercise extends React.Component {
   startExercise() {
     const test = loadTest(this.props.data);
     this.setState({testString: test, index: 0});
+    this.clearExercise();
 
     if (!this.state.test) {
       window.addEventListener('keydown', this.handleKeyDown);
       window.addEventListener('keyup', this.handleKeyUp);
-      this.setState({test: true});
+      this.setState({test: true, clear: false});
     }
   }
 
@@ -41,18 +39,19 @@ class Exercise extends React.Component {
   }
 
   handleKeyDown(e) {
+    let index = this.state.index;
+    if (index === this.state.testString.length) {
+      this.clearExercise();
+      this.startExercise();
+      return;
+    }
     const pressedKey = e.key;
+    const expectedKey = this.state.testString[index];
     if (pressedKey === 'Escape') {
       window.removeEventListener('keydown', this.handleKeyDown);
       window.removeEventListener('keyup', this.handleKeyUp);
       this.setState({test: false});
     }
-    if (this.state.next) {
-        this.setState({next: false});
-        this.startExercise();
-        return;
-      }
-    let index = this.state.index;
     this.end = new Date();
     this.time = this.end - this.start;
     console.log('transition time - ', this.time);
@@ -60,38 +59,38 @@ class Exercise extends React.Component {
       this.displayPressedKey(pressedKey);
     }
     console.log('CURRENT KEY - ', pressedKey)
-    let expectedKey = this.state.testString[this.state.index];
     let letter = document.getElementById('index' + this.state.index + expectedKey);
-    console.log('index: ', this.state.index, '; key: ', pressedKey, '; expected key: ', expectedKey)
-    if (pressedKey === this.state.testString[this.state.index]) {
-      letter.className = 'used';
-      index++;
-      if (index === this.state.testString.length) {
-        this.setState({next: true});
-        return;
+    if (pressedKey === expectedKey) {
+      if (letter.className === 'missed') {
+        letter.className = 'hit error';
+        // if (expectedKey === ' ') {
+        //   letter.innerHTML = '&#8230;';
+        // }
+      } else {
+        letter.className = 'hit';
       }
-      expectedKey = this.state.testString[index];
-      letter = document.getElementById('index' + index + expectedKey);
-      letter.className = 'cursor';
+      index++;
       this.setState({index: index});
+      if (index === this.state.testString.length) return;
+      const cursor = this.state.testString[index];
+      letter = document.getElementById('index' + index + cursor);
+      letter.className = 'cursor';
     } else {
-      console.log('index - ', index)
-      letter.className = 'mistake';
+      letter.className = 'missed';
     }
   }
 
   displayPressedKey(key) {
-    console.log('KEY: ', key);
     let pressed = document.getElementById(key);
-    console.log('PRESSED: ', pressed);
-    pressed.style.cssText = `background-color: ${this.state.colorPressed}`;
+    let className = pressed.className;
+    pressed.className = className + ' pressed';
     setTimeout(() => {
-      pressed.style.cssText = `background-color: ${this.state.colorNormal}`;
+      pressed.className = className;
     }, 250);
   }
 
-  displayString(flag) {
-    if (!flag) return null;
+  displayString(render) {
+    if (!render) return null;
     return this.state.testString.map((item, i) => {
       return <span
         key={'k' + item + i}
@@ -103,11 +102,17 @@ class Exercise extends React.Component {
     });
   }
 
+  clearExercise() {
+    this.setState({clear: true}, () => {
+      this.setState({clear: false});
+    });
+  }
+
   render() {
     return (
       <div className='exercise-wrapper'>
         <div id='exercise' className='exercise' onClick={this.startExercise} >
-          {this.displayString(this.state.test)}
+          {this.displayString(!this.state.clear)}
         </div>
       </div>
     );
