@@ -1,5 +1,6 @@
 import React from 'react';
 import {loadTest} from './loadTest';
+import {letters} from './charSet';
 
 class Exercise extends React.Component {
   constructor(props) {
@@ -9,7 +10,6 @@ class Exercise extends React.Component {
       colorNormal: 'none',
       testString: ''
     };
-    this.letters = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
     this.startExercise = this.startExercise.bind(this);
   }
 
@@ -35,7 +35,7 @@ class Exercise extends React.Component {
         end = new Date();
         time = end - start;
         console.log('transition time - ', time);
-        if (this.letters.includes(key)) {
+        if (letters.includes(key)) {
           current = document.getElementById(key);
           current.style.cssText = `background-color: ${this.state.colorPressed}`;
           ((c) => {
