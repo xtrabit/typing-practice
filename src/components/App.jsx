@@ -2,7 +2,8 @@ import React from 'react';
 import './styles.css';
 import Board from './Board';
 import Exercise from './Exercise';
-import QuickStats from './QuickStats';
+
+import Header from './Header';
 
 class App extends React.Component {
   constructor(props) {
@@ -15,7 +16,7 @@ class App extends React.Component {
   render() {
     return (
       <div className='app-wrapper'>
-        <QuickStats />
+        <Header user={this.state.user}/>
         <Exercise />
         <Board />
       </div>

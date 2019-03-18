@@ -10,7 +10,7 @@ class QuickStats extends React.Component {
   render() {
     return (
       <div className='quickstats-wrapper'>
-        <h2>QuickStats</h2>
+        <h2>WPM: </h2>
       </div>
     );
   }
