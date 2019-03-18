@@ -1,7 +1,6 @@
 const {letters} = require('./charSet.js');
 
 const loadTest = (data) => {
-  console.log(data);
   return generateString();
 };
 
@@ -9,7 +8,7 @@ const generateString = () => {
   let min = 3;
   let max = 7;
   let str = [];
-  let length = 15;
+  let length = 10;
   let total = 0;
   while(total < length) {
     let qty = ~~(Math.random() * (max - min + 1) + min);
@@ -22,7 +21,7 @@ const generateString = () => {
     total++;
   }
   str.pop();
-  str = ['a', 'b', ' ', 'c', 'd', ' ', 'e', ' '];
+  // str = ['a', 'b', ' ', 'c', 'd', ' ', 'e', ' '];
   return str;
 };
 

@@ -12,7 +12,7 @@ class Exercise extends React.Component {
       clear: false,
       data: []
     };
-    this.time = 0;
+    this.delay = 0;
     this.start = 0;
     this.end = 0;
 
@@ -56,18 +56,20 @@ class Exercise extends React.Component {
     }
 
     this.end = new Date();
-    this.time = this.end - this.start;
-    console.log('CURRENT KEY [', pressedKey, '] transition time - ', this.time);
+    this.delay = this.end - this.start;
+    console.log('CURRENT KEY [', pressedKey, '] transition time - ', this.delay);
 
     letters.includes(pressedKey) && this.displayPressedKey(pressedKey);
 
     if (pressedKey === expectedKey) {
       letter.className = letter.className === 'missed'
-        ? letter.className = 'hit error'
+        ? letter.className = 'error'
         : letter.className = 'hit';
 
       index++;
-      this.setState({index: index});
+      this.setState({index: index}, () => {
+        this.saveData();
+      });
 
       if (index !== this.state.testString.length) {
         const cursor = this.state.testString[index];
@@ -78,6 +80,34 @@ class Exercise extends React.Component {
       letter.className = 'missed';
     }
 
+  }
+
+  saveData() {
+    let {index, testString} = this.state;
+    index--;
+    if (index > 0 && index < testString.length) {
+      const className = document.getElementById('index' + index + testString[index]).className;
+      let key = {};
+      key.letter = testString[index];
+      key.after = testString[index - 1];
+      key.delay = className === 'error' ? 1 : this.delay;
+      key.time = new Date();
+      let data = [...this.state.data];
+      data.push(key);
+      this.setState({data: data}, () => {
+        if (index === testString.length - 1) {
+          this.writeData();
+        }
+      });
+    }
+    // if (index === testString.length && this.state.data.length) {
+    //   console.log()
+    //   this.writeData();
+    // }
+  }
+
+  writeData() {
+    this.props.writeData(this.state.data);
   }
 
   displayPressedKey(key) {

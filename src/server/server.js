@@ -35,16 +35,18 @@ app.get('/load/:user', (req, res) => {
       return;
     }
     data === null ? res.send(['empty']) : res.send(data);
-  });});
+  });
+});
 
-app.post('/stats', (req, res) => {
-  db.saveStats('someone', req.body, (err, data) => {
+app.post('/write/:user', (req, res) => {
+  const user = req.params.user;
+  db.saveStats(user, req.body, (err, data) => {
     if (err) {
       console.log(err);
       res.status(500).end();
       return;
     }
-    res.status(201).end();
+    res.status(201).send(['posted']);
   });
 });
 

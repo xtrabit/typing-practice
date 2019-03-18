@@ -36,7 +36,7 @@ const saveStats = async (user, data, callback) => {
   if (table === null) {
     const ctb = await createTable(user);
   }
-  const userId = await getUserId(user);
+  let userId = await getUserId(user);
   if (!userId.length) {
     userId = await saveUser(user);
   }

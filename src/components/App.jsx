@@ -14,6 +14,7 @@ class App extends React.Component {
       wpm: 0
     };
     this.loadData = this.loadData.bind(this);
+    this.writeData = this.writeData.bind(this);
     this.setWpm = this.setWpm.bind(this);
   }
 
@@ -28,6 +29,17 @@ class App extends React.Component {
         console.log(res);
         res[0] === 'empty' ? this.setState({data: null}) : this.setState({data: res});
       })
+      .catch(err => console.error(err));
+  }
+
+  writeData(data) {
+    fetch(`/write/${this.state.user}`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    })
+      .then(res => res.json())
+      .then(res => console.log(res[0]))
       .catch(err => console.error(err));
   }
 
@@ -46,6 +58,7 @@ class App extends React.Component {
           data={this.state.data}
           user={this.state.user}
           loadData={this.loadData}
+          writeData={this.writeData}
           setWpm={this.setWpm}
         />
         <Board />
