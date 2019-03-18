@@ -9,7 +9,8 @@ class Exercise extends React.Component {
       testString: [],
       index: 0,
       test: false,
-      clear: false
+      clear: false,
+      data: []
     };
     this.time = 0;
     this.start = 0;
@@ -35,7 +36,6 @@ class Exercise extends React.Component {
 
   handleKeyUp(e) {
     this.start = new Date();
-    console.log('key press time - ', this.start - this.end)
   }
 
   handleKeyDown(e) {
@@ -47,37 +47,37 @@ class Exercise extends React.Component {
     }
     const pressedKey = e.key;
     const expectedKey = this.state.testString[index];
+    let letter = document.getElementById('index' + this.state.index + expectedKey);
+
     if (pressedKey === 'Escape') {
       window.removeEventListener('keydown', this.handleKeyDown);
       window.removeEventListener('keyup', this.handleKeyUp);
       this.setState({test: false});
     }
+
     this.end = new Date();
     this.time = this.end - this.start;
-    console.log('transition time - ', this.time);
-    if (letters.includes(pressedKey)) {
-      this.displayPressedKey(pressedKey);
-    }
-    console.log('CURRENT KEY - ', pressedKey)
-    let letter = document.getElementById('index' + this.state.index + expectedKey);
+    console.log('CURRENT KEY [', pressedKey, '] transition time - ', this.time);
+
+    letters.includes(pressedKey) && this.displayPressedKey(pressedKey);
+
     if (pressedKey === expectedKey) {
-      if (letter.className === 'missed') {
-        letter.className = 'hit error';
-        // if (expectedKey === ' ') {
-        //   letter.innerHTML = '&#8230;';
-        // }
-      } else {
-        letter.className = 'hit';
-      }
+      letter.className = letter.className === 'missed'
+        ? letter.className = 'hit error'
+        : letter.className = 'hit';
+
       index++;
       this.setState({index: index});
-      if (index === this.state.testString.length) return;
-      const cursor = this.state.testString[index];
-      letter = document.getElementById('index' + index + cursor);
-      letter.className = 'cursor';
+
+      if (index !== this.state.testString.length) {
+        const cursor = this.state.testString[index];
+        letter = document.getElementById('index' + index + cursor);
+        letter.className = 'cursor';
+      }
     } else {
       letter.className = 'missed';
     }
+
   }
 
   displayPressedKey(key) {
