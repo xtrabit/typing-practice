@@ -5,18 +5,19 @@ class Header extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: []
+      data: null
     };
     this.loadStats = this.loadStats.bind(this);
   }
 
   loadStats() {
     fetch(`/load/${this.props.user}`)
+      .then(res => res.json())
       .then(res => {
         console.log(res);
-        this.setState({data: res});
+        res[0] === 'empty' ? this.setState({data: null}) : this.setState({data: res});
       })
-      .error(err => console.error(err));
+      .catch(err => console.error(err));
   }
 
   render() {

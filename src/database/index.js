@@ -17,8 +17,11 @@ db.connect((err) => {
   }
 });
 
-const getStats = (user, callback) => {
-
+const getStats = async (user, callback) => {
+  const table = await checkUserTable(user);
+  if (table === null) {
+    return callback(null, null);
+  }
   db.query('SELECT letter, after, delay, time FROM ' + user, (err, res) => {
     if (err) {
       console.log(err);

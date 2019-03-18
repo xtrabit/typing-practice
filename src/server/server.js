@@ -25,6 +25,18 @@ app.get('/stats', (req, res) => {
   });
 });
 
+app.get('/load/:user', (req, res) => {
+  const user = req.params.user;
+  console.log(user)
+  db.getStats(user, (err, data) => {
+    if (err) {
+      console.log(err);
+      res.status(404).end();
+      return;
+    }
+    data === null ? res.send(['empty']) : res.send(data);
+  });});
+
 app.post('/stats', (req, res) => {
   db.saveStats('someone', req.body, (err, data) => {
     if (err) {
