@@ -1,15 +1,21 @@
 import React from 'react';
+import {loadTest} from './loadTest';
 
 class Exercise extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      colorPressed: 'lightgreen',
+      colorNormal: 'none',
+      testString: ''
     };
     this.letters = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
     this.startExercise = this.startExercise.bind(this);
   }
 
   startExercise() {
+    const test = loadTest(this.props.data);
+    this.setState({testString: test});
     let time = 0;
     let start = 0;
     let end = 0;
@@ -31,10 +37,10 @@ class Exercise extends React.Component {
         console.log('transition time - ', time);
         if (this.letters.includes(key)) {
           current = document.getElementById(key);
-          current.style.cssText = 'background-color: lightgreen';
+          current.style.cssText = `background-color: ${this.state.colorPressed}`;
           ((c) => {
             setTimeout(() => {
-              c.style.cssText = 'background-color: none';
+              c.style.cssText = `background-color: ${this.state.colorNormal}`;
             }, 250);
           })(current);
         }
@@ -49,7 +55,9 @@ class Exercise extends React.Component {
   render() {
     return (
       <div className='exercise-wrapper'>
-        <div className='exercise' onClick={this.startExercise}></div>
+        <div className='exercise' onClick={this.startExercise}>
+
+        </div>
       </div>
     );
   }

@@ -7,26 +7,19 @@ class Header extends React.Component {
     this.state = {
       data: null
     };
-    this.loadStats = this.loadStats.bind(this);
   }
 
-  loadStats() {
-    fetch(`/load/${this.props.user}`)
-      .then(res => res.json())
-      .then(res => {
-        console.log(res);
-        res[0] === 'empty' ? this.setState({data: null}) : this.setState({data: res});
-      })
-      .catch(err => console.error(err));
+  componentDidMount() {
+    // this.setState({})
   }
 
   render() {
     return (
       <div className='header-wrapper'>
-        <QuickStats />
+        <QuickStats wpm={this.props.wpm} />
         <div className='user-wrapper'>
           <p className='user-name'>{this.props.user}</p>
-          <p className='options' onClick={this.loadStats}>&#183; &#183; &#183;</p>
+          <p className='options' onClick={() => {}}>&#183; &#183; &#183;</p>
         </div>
       </div>
     );

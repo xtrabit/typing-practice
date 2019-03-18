@@ -5,6 +5,11 @@ class Board extends React.Component {
     super(props);
     this.state = {
     };
+    this.a = React.createRef();
+  }
+
+  componentDidMount() {
+
   }
 
   render() {
