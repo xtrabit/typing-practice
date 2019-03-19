@@ -10,7 +10,8 @@ class Exercise extends React.Component {
       index: 0,
       test: false,
       clear: false,
-      data: []
+      data: [],
+      oldData: []
     };
     this.delay = 0;
     this.start = 0;
@@ -20,6 +21,15 @@ class Exercise extends React.Component {
     this.displayPressedKey = this.displayPressedKey.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.data !== this.props.data) {
+      this.setState({oldData: this.props.data}, () => {
+        this.calcWpm();
+
+      });
+    }
   }
 
   startExercise() {
@@ -36,6 +46,7 @@ class Exercise extends React.Component {
 
   handleKeyUp(e) {
     this.start = new Date();
+
   }
 
   handleKeyDown(e) {
@@ -69,7 +80,9 @@ class Exercise extends React.Component {
       index++;
       this.setState({index: index}, () => {
         this.saveData();
+        // this.calcWpm();
       });
+      pressedKey === ' ' && this.calcWpm();
 
       if (index !== this.state.testString.length) {
         const cursor = this.state.testString[index];
@@ -82,6 +95,37 @@ class Exercise extends React.Component {
 
   }
 
+  calcWpm() {
+    if (!this.state.data.length) {
+      let sample = this.state.oldData;
+      if (sample.length > 50) {
+        sample = sample.slice(sample.length - 50);
+      }
+      let count = 0;
+      let sum = sample.reduce((acc, item) => {
+        if (item.delay <= 1000) {
+          count++;
+          acc += item.delay;
+        }
+        return acc;
+      }, 0);
+      let ave = count / (sum / 60000);
+      var wpm = Number.parseFloat((ave / 5).toFixed(1));
+    } else {
+      let count = 0;
+      let sum = this.state.data.reduce((acc, item) => {
+        if (item.delay <= 1000) {
+          count++;
+          acc += item.delay;
+        }
+        return acc;
+      }, 0);
+      let ave = count / (sum / 60000);
+      var wpm = Number.parseFloat((ave / 5).toFixed(1));
+    }
+    this.props.setWpm(wpm);
+  }
+
   saveData() {
     let {index, testString} = this.state;
     index--;
@@ -90,7 +134,7 @@ class Exercise extends React.Component {
       let key = {};
       key.letter = testString[index];
       key.after = testString[index - 1];
-      key.delay = className === 'error' ? 1 : this.delay;
+      key.delay = className === 'error' || this.delay > 1000 ? 1000 : this.delay;
       key.time = new Date();
       let data = [...this.state.data];
       data.push(key);
@@ -100,10 +144,6 @@ class Exercise extends React.Component {
         }
       });
     }
-    // if (index === testString.length && this.state.data.length) {
-    //   console.log()
-    //   this.writeData();
-    // }
   }
 
   writeData() {
@@ -113,10 +153,12 @@ class Exercise extends React.Component {
   displayPressedKey(key) {
     let pressed = document.getElementById(key);
     let className = pressed.className;
-    pressed.className = className + ' pressed';
-    setTimeout(() => {
-      pressed.className = className;
-    }, 250);
+    if (!className.includes('pressed')) {
+      pressed.className = className + ' pressed';
+      setTimeout(() => {
+        pressed.className = className;
+      }, 250);
+    }
   }
 
   displayString(render) {

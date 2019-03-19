@@ -26,7 +26,7 @@ class App extends React.Component {
     fetch(`/load/${this.state.user}`)
       .then(res => res.json())
       .then(res => {
-        console.log(res);
+        console.log('LOADED DATA - ', res);
         res[0] === 'empty' ? this.setState({data: null}) : this.setState({data: res});
       })
       .catch(err => console.error(err));

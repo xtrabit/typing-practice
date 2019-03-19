@@ -8,7 +8,7 @@ const generateString = () => {
   let min = 3;
   let max = 7;
   let str = [];
-  let length = 10;
+  let length = 45;
   let total = 0;
   while(total < length) {
     let qty = ~~(Math.random() * (max - min + 1) + min);
