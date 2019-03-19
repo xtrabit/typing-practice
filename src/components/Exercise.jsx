@@ -33,7 +33,7 @@ class Exercise extends React.Component {
   }
 
   startExercise() {
-    const test = loadTest(this.props.data);
+    const test = loadTest(this.state.data, this.state.oldData);
     this.setState({testString: test, index: 0});
     this.clearExercise();
 
@@ -79,10 +79,9 @@ class Exercise extends React.Component {
 
       index++;
       this.setState({index: index}, () => {
-        this.saveData();
-        // this.calcWpm();
+        this.saveKey();
       });
-      pressedKey === ' ' && this.calcWpm();
+      pressedKey === ' ' && this.calcWpm(100);
 
       if (index !== this.state.testString.length) {
         const cursor = this.state.testString[index];
@@ -95,11 +94,11 @@ class Exercise extends React.Component {
 
   }
 
-  calcWpm() {
+  calcWpm(max) {
     if (!this.state.data.length) {
       let sample = this.state.oldData;
-      if (sample.length > 50) {
-        sample = sample.slice(sample.length - 50);
+      if (sample.length > max) {
+        sample = sample.slice(sample.length - max);
       }
       let count = 0;
       let sum = sample.reduce((acc, item) => {
@@ -112,8 +111,12 @@ class Exercise extends React.Component {
       let ave = count / (sum / 60000);
       var wpm = Number.parseFloat((ave / 5).toFixed(1));
     } else {
+      let sample = this.state.data;
+      if (sample.length > max) {
+        sample = sample.slice(sample.length - max);
+      }
       let count = 0;
-      let sum = this.state.data.reduce((acc, item) => {
+      let sum = sample.reduce((acc, item) => {
         if (item.delay <= 1000) {
           count++;
           acc += item.delay;
@@ -126,7 +129,7 @@ class Exercise extends React.Component {
     this.props.setWpm(wpm);
   }
 
-  saveData() {
+  saveKey() {
     let {index, testString} = this.state;
     index--;
     if (index > 0 && index < testString.length) {
