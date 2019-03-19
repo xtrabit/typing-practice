@@ -32,14 +32,14 @@ class App extends React.Component {
       .catch(err => console.error(err));
   }
 
-  writeData(data) {
+  writeData(data, cb) {
     fetch(`/write/${this.state.user}`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(data)
     })
       .then(res => res.json())
-      .then(res => console.log(res[0]))
+      .then(res => cb())
       .catch(err => console.error(err));
   }
 

@@ -2,7 +2,7 @@ const {letters} = require('./charSet.js');
 
 const loadTest = (data, old) => {
   if (!data.length && !old.length) {
-    return generateString();
+    return generateString(letters);
   }
   let sample = makeSample(data, old);
   console.log('LOAD TEST SAMPLE --- ', sample);

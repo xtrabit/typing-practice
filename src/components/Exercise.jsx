@@ -11,7 +11,7 @@ class Exercise extends React.Component {
       test: false,
       clear: false,
       data: [],
-      oldData: []
+      loadedData: []
     };
     this.delay = 0;
     this.start = 0;
@@ -25,7 +25,7 @@ class Exercise extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.data !== this.props.data) {
-      this.setState({oldData: this.props.data}, () => {
+      this.setState({loadedData: this.props.data}, () => {
         this.calcWpm();
 
       });
@@ -33,7 +33,7 @@ class Exercise extends React.Component {
   }
 
   startExercise() {
-    const test = loadTest(this.state.data, this.state.oldData);
+    const test = loadTest(this.state.data, this.state.loadedData);
     this.setState({testString: test, index: 0});
     this.clearExercise();
 
@@ -96,7 +96,7 @@ class Exercise extends React.Component {
 
   calcWpm(max) {
     if (!this.state.data.length) {
-      let sample = this.state.oldData;
+      let sample = this.state.loadedData;
       if (sample.length > max) {
         sample = sample.slice(sample.length - max);
       }
@@ -150,7 +150,9 @@ class Exercise extends React.Component {
   }
 
   writeData() {
-    this.props.writeData(this.state.data);
+    this.props.writeData(this.state.data, () => {
+      this.setState({data: []});
+    });
   }
 
   displayPressedKey(key) {
