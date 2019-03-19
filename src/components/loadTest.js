@@ -1,36 +1,43 @@
 const {letters} = require('./charSet.js');
 
-const loadTest = (data, old) => {
-  if (!data.length && !old.length) {
+const loadTest = (data) => {
+  if (!data.length) {
     return generateString(letters);
   }
-  const sample = makeSample(data, old);
-  // console.log('LOAD TEST SAMPLE --- ', sample);
-  let sorted = arrangeByKey(sample);
-  sorted = sorted.map((item) => {
-    return item.key;
-  });
-  if (sorted.includes(' ')) sorted.splice(sorted.indexOf(' '));
-  // console.log('SORTED BEFORE', sorted);
-  if (sorted.length < 26) {
-    let needed = 26 - sorted.length;
+  const sample = arrangeByKey(data);
+  let keys = extractKeys(sample);
+  keys = compensateSet(keys, 26);
+  // console.log('SORTED AFTER', keys);
+  const half = keys.slice(~~(keys.length / 2));
+  console.log(half);
+  return generateString(half);
+};
+
+const compensateSet = (data, max) => {
+  if (data.length < max) {
+    let needed = max - data.length;
     const extracted = letters.reduce((acc, item) => {
-      if (!sorted.includes(item)) {
+      if (!data.includes(item)) {
         acc.push(item);
       }
       return acc;
     }, []);
     while (needed > 0) {
       const index = ~~(Math.random() * extracted.length);
-      sorted.unshift(extracted[index]);
+      data.unshift(extracted[index]);
       extracted.splice(index, 1);
       needed--;
     }
   }
-  console.log('SORTED AFTER', sorted);
-  const half = sorted.slice(~~(sorted.length / 2));
-  console.log(half);
-  return generateString(half);
+  return data;
+}
+
+const extractKeys = (data) => {
+  let keys = data.map((item) => {
+    return item.key;
+  });
+  if (keys.includes('')) keys.splice(keys.indexOf(''), 1);
+  return keys;
 };
 
 const sort = (list) => {
@@ -56,14 +63,12 @@ const sort = (list) => {
   return sortedList;
 };
 
-const arrangeByKey = (data) => {
-  let sample;
-  if (data.length > 1000) {
-    sample = data.slice(data.length - 1000);
-  } else {
-    sample = data;
-  }
-  const list = sample.reduce((acc, item) => {
+const sortByKeyTimes = (data) => {
+
+};
+
+const extractKeyTimes = (data) => {
+  return data.reduce((acc, item) => {
     if (!acc[item.letter]) {
       acc[item.letter] = [item.delay];
     } else {
@@ -71,51 +76,40 @@ const arrangeByKey = (data) => {
     }
     return acc;
   }, {});
-  const extracted = [];
-  for (let key in list) {
-    if (key === '') continue;
-    if (list[key].length > 10) {
-      list[key] = list[key].slice(list[key].length - 10);
+};
+
+const averageKeyTimes = (data) => {
+  const averaged = [];
+  const keys = Object.keys(data);
+  for (let i = 0; i < keys.length; i++) {
+    let item = data[keys[i]];
+    if (item.length > 10) {
+      item = item.slice(item.length - 10);
     }
     let sum = 0;
-    for (let i = 0; i < list[key].length; i++) {
-      sum += list[key][i];
+    for (let n = 0; n < item.length; n++) {
+      sum += item[n];
     }
-    list[key] = sum / list[key].length;
+    item = sum / item.length;
     const obj = {};
-    obj.key = key;
-    obj.value = list[key];
-    extracted.push(obj);
+    obj.key = keys[i];
+    obj.value = item;
+    averaged.push(obj);
   }
-
-
-  return sort(extracted);
-  // return list;
+  return averaged;
 };
 
-const makeSample = (data, old) => {
-  // console.log(data)
-  // console.log(old)
-  let sample = [];
-  if (data.length < 201 && old.length) {
-    const index = data.length;
-    sample = old.slice(old.length - (201 - index)).concat(data);
-  } else if (data.lenght > 200) {
-    sample = data.slice(data.length - 200);
-  } else if (data.length < 201 && !old.length) {
+const arrangeByKey = (data) => {
+  const max = 200;
+  let sample;
+  if (data.length > max) {
+    sample = data.slice(data.length - max);
+  } else {
     sample = data;
   }
-  // console.log('MAKE SAMPLE -- ', sample);
-  return sample;
-};
-
-
-const stringFromData = (data) => {
-
-};
-
-const makeTest = (data) => {
-
+  let list = extractKeyTimes(sample);
+  list = averageKeyTimes(list);
+  return sort(list);
 };
 
 const generateString = (letters) => {
@@ -135,7 +129,6 @@ const generateString = (letters) => {
     total++;
   }
   str.pop();
-  // str = ['a', 'b', ' ', 'c', 'd', ' ', 'e', ' '];
   return str;
 };
 
