@@ -19,7 +19,11 @@ module.exports = {
     "react/destructuring-assignment": "warn",
     "no-nested-ternary": "off",
     "arrow-parens": "warn",
-    "react/prefer-stateless-function": "warn"
+    "react/prefer-stateless-function": "warn",
+    "no-plusplus": "off",
+    "no-param-reassign": "off",
+    "no-bitwise": "off",
+    "no-use-before-define": "warn"
   },
   "globals": {"fetch": false},
   "env": {

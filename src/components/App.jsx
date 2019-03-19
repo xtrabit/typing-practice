@@ -44,7 +44,7 @@ class App extends React.Component {
   }
 
   setWpm(wpm) {
-    this.setState({wpm: wpm});
+    this.setState({wpm});
   }
 
   render() {

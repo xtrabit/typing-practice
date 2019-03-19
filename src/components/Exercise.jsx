@@ -33,7 +33,7 @@ class Exercise extends React.Component {
   }
 
   startExercise() {
-    const test = loadTest(this.state.data, this.state.loadedData);
+    const test = loadTest(this.state.loadedData);
     this.setState({testString: test, index: 0});
     this.clearExercise();
 
@@ -50,8 +50,8 @@ class Exercise extends React.Component {
   }
 
   handleKeyDown(e) {
-    let index = this.state.index;
-    if (index === this.state.testString.length) {
+    let {index, testString} = this.state;
+    if (index === testString.length) {
       this.clearExercise();
       this.startExercise();
       return;
@@ -78,10 +78,10 @@ class Exercise extends React.Component {
         : letter.className = 'hit';
 
       index++;
-      this.setState({index: index}, () => {
+      this.setState({index}, () => {
         this.saveKey();
       });
-      pressedKey === ' ' && this.calcWpm(100);
+      pressedKey === ' ' && this.calcWpm();
 
       if (index !== this.state.testString.length) {
         const cursor = this.state.testString[index];
@@ -91,40 +91,24 @@ class Exercise extends React.Component {
     } else {
       letter.className = 'missed';
     }
-
   }
 
-  calcWpm(max) {
-    if (!this.state.data.length) {
-      let sample = this.state.loadedData;
+  calcWpm() {
+    const max = 100;
+    let sample = this.state.loadedData;
+    let wpm = 0;
+    if (sample.length) {
       if (sample.length > max) {
         sample = sample.slice(sample.length - max);
       }
       let count = 0;
-      let sum = sample.reduce((acc, item) => {
-        if (item.delay <= 1000) {
-          count++;
-          acc += item.delay;
-        }
+      const sum = sample.reduce((acc, item) => {
+        count++;
+        acc += item.delay;
         return acc;
       }, 0);
-      let ave = count / (sum / 60000);
-      var wpm = Number.parseFloat((ave / 5).toFixed(1));
-    } else {
-      let sample = this.state.data;
-      if (sample.length > max) {
-        sample = sample.slice(sample.length - max);
-      }
-      let count = 0;
-      let sum = sample.reduce((acc, item) => {
-        if (item.delay <= 1000) {
-          count++;
-          acc += item.delay;
-        }
-        return acc;
-      }, 0);
-      let ave = count / (sum / 60000);
-      var wpm = Number.parseFloat((ave / 5).toFixed(1));
+      const ave = count / (sum / 60000);
+      wpm = Number.parseFloat((ave / 5).toFixed(1));
     }
     this.props.setWpm(wpm);
   }
@@ -134,14 +118,14 @@ class Exercise extends React.Component {
     index--;
     if (index > 0 && index < testString.length) {
       const className = document.getElementById('index' + index + testString[index]).className;
-      let key = {};
+      const key = {};
       key.letter = testString[index];
       key.after = testString[index - 1];
       key.delay = className === 'error' || this.delay > 1000 ? 1000 : this.delay;
       key.time = new Date();
-      let data = [...this.state.data];
+      const data = [...this.state.data];
       data.push(key);
-      this.setState({data: data}, () => {
+      this.setState({data}, () => {
         if (index === testString.length - 1) {
           this.writeData();
         }
@@ -156,8 +140,8 @@ class Exercise extends React.Component {
   }
 
   displayPressedKey(key) {
-    let pressed = document.getElementById(key);
-    let className = pressed.className;
+    const pressed = document.getElementById(key);
+    const {className} = pressed;
     if (!className.includes('pressed')) {
       pressed.className = className + ' pressed';
       setTimeout(() => {
@@ -169,13 +153,15 @@ class Exercise extends React.Component {
   displayString(render) {
     if (!render) return null;
     return this.state.testString.map((item, i) => {
-      return <span
-        key={'k' + item + i}
-        id={'index' + i + item}
-        className={i === 0 ? 'cursor' : 'regular'}
+      return (
+        <span
+          key={'k' + item + i}
+          id={'index' + i + item}
+          className={i === 0 ? 'cursor' : 'regular'}
         >
-        {item}
+          {item}
         </span>
+      )
     });
   }
 
@@ -188,7 +174,7 @@ class Exercise extends React.Component {
   render() {
     return (
       <div className='exercise-wrapper'>
-        <div id='exercise' className='exercise' onClick={this.startExercise} >
+        <div id='exercise' className='exercise' onClick={this.startExercise}>
           {this.displayString(!this.state.clear)}
         </div>
       </div>
