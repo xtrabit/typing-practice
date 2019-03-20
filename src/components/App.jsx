@@ -41,7 +41,8 @@ class App extends React.Component {
       .then(res => res.json())
       .then(res => cb())
       .catch(err => console.error(err));
-    const newData = [...this.state.data].concat(data);
+    let newData = this.state.data ? [...this.state.data] : [];
+    newData = newData.concat(data);
     this.setState({data: newData});
   }
 
