@@ -1,0 +1,176 @@
+@import url('https://fonts.googleapis.com/css?family=Cutive+Mono');
+
+body {
+  /*display: block;*/
+}
+
+.app-wrapper {
+  width: 80vmin;
+  margin: auto;
+}
+
+.header-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  border: solid black 1px;
+  width: 100%;
+  height: 5vmin;
+}
+
+.quickstats-wrapper {
+  display: inline-block;
+  font-size: 2vmin;
+  margin: 0 1vmin;
+  /*height: 100%;*/
+}
+
+/*.header-wrapper div {
+  display: inline-block;
+  margin: 100% 15px;
+}*/
+
+.user-wrapper {
+  display: flex;
+  margin: 0;
+  height: 100%;
+  font-size: 2vmin;
+}
+
+.user-wrapper p {
+  display: inline-block;
+  margin: auto 1vmin;
+  padding: .01vmin 1vmin;
+  line-height: 2vmin;
+}
+
+.user-name {
+  font-size: inherit;
+
+}
+
+.options {
+  border: solid black 1px;
+  font-style: bold;
+  font-size: 3vmin;
+  letter-spacing: -.3vmin;
+  border-radius: 3px;
+  background-color: blue;
+  color: white;
+}
+
+.options:hover {
+  cursor: pointer;
+}
+
+.board-wrapper {
+  box-sizing: border-box;
+  align-items: center;
+  align-content: center;
+  width: calc(2.79 * 28vmin);
+  height: 28vmin;
+  margin: 15px auto;
+  padding: 0;
+}
+
+.board-key p {
+  padding: 0;
+  margin: 0;
+  line-height: 2.5vmin;
+}
+
+.board-key {
+  float: left;
+  box-sizing: border-box;
+  display: inline-block;
+  align-content: center;
+  text-align: center;
+  margin: 0.1vmin;
+  border: solid black 1px;
+  border-radius: 1vmin;
+  height: 19.1%;
+  font-size: 1.7vmin;
+  line-height: 5vmin;
+  padding: 0;
+  box-shadow: 0 0 0.2vmin 0.2vmin lightgrey;
+}
+
+.pressed {
+  background-color: lightgreen;
+}
+
+.full {
+  width: 6.84%;
+}
+
+.full-qtr {
+  width: 8.6%;
+}
+
+.full-half {
+  width: 10.45%;
+}
+
+.double {
+  width: 14%;
+}
+
+.three-qtr {
+  width: 5.13%;
+}
+
+.quintuple {
+  width: 35.3%;
+}
+
+#tab, #caps, #lshift, #rshift, #lctrl, #rctrl, #fn, #lalt, #ralt, #sp, #left, #right, #updn, #enter, #bsp {
+  background-color: grey;
+  color: white;
+}
+
+.exercise-wrapper {
+  box-sizing: border-box;
+  margin: 15px auto;
+  padding: 0;
+  width: 75vmin;
+  height: 15vmin;
+  border: solid black 1px;
+}
+
+.exercise {
+  width: 100%;
+  height: 100%;
+  font-family: 'Cutive Mono', monospace;
+  font-size: 2.5vmin;
+  padding: 1vmin;
+  /*letter-spacing: 0.2vmin;*/
+}
+
+span.hit {
+  background-color: #F5EEE5;
+  /*background-color: #F5E9DA;*/
+  /*background-color: #E2D4BF;*/
+  /*background-color: #DEB887;*/
+}
+
+span.missed {
+  background-color: #fcc;
+  /*color: white;*/
+  border: solid red 1px;
+}
+
+span.error {
+  background-color: #fcc;
+  /*color: red;*/
+}
+
+span.cursor {
+  border: solid black 1px;
+}
+
+span {
+  box-sizing: border-box;
+  white-space: pre-wrap;
+  padding: 0;
+}
