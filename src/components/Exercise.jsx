@@ -1,6 +1,6 @@
 import React from 'react';
-import {loadTest} from './loadTest';
-import {letters} from './charSet';
+import {loadTest} from '../lib/loadTest';
+import {letters} from '../lib/charSet';
 
 class Exercise extends React.Component {
   constructor(props) {

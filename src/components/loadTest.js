@@ -1,9 +1,15 @@
 const {letters} = require('./charSet.js');
+const assembleString = require('../exercise/initialTest.js');
 
 const loadTest = (data) => {
-  const max = 38
+  const max = 80;
+  const test = assembleString(max);
+  console.log(test);
+  return test;
+
   if (!data.length) {
-    return generateString(letters, max);
+    return assembleString(max);
+    // return generateString(letters, max);
   }
   let sample = arrangeByKey(data);
   // console.log('ARRANGED ------------------------------------------------------', sample)
@@ -19,7 +25,9 @@ const loadTest = (data) => {
 
   // const half = keys.slice(~~(keys.length / 2));
   // console.log(half);
-  return generateTest(weighted);
+
+  return assembleString(max);
+  // return generateTest(weighted);
 };
 
 const generateTest = (letters) => {
