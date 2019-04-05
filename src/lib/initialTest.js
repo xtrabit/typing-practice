@@ -29,6 +29,7 @@ const getGroup = (sequence = ['LR', 'RR', 'RL', 'LL']) => {
   const index = ~~(Math.random() * bigrams.all.length);
   const pair = bigrams.all[index][0];
   const choice = bigrams.all[index][2];
+  const score = bigrams.all[index][1];
   const seqIndex = sequence.indexOf(choice);
   const newSequenceStart = sequence.slice(seqIndex);
   const newSequenceEnd = sequence.slice(0, seqIndex);
@@ -36,6 +37,7 @@ const getGroup = (sequence = ['LR', 'RR', 'RL', 'LL']) => {
   const result = {};
   result.group = newSequence;
   result.pair = pair;
+  result.score = score;
   return result;
 };
 
@@ -45,8 +47,8 @@ const getExerciseSrting = (counter, count, maxTime) => {
     return acc;
   }, {});
   // const {group, pair} = getGroup(['LR', 'RL']);
-  const {group, pair} = getGroup(['LL', 'LR', 'RR', 'RL']);
-  // const {group, pair} = getGroup(['LL', 'LL', 'LR', 'RR', 'RR', 'RL']);
+  let {group, pair, score} = getGroup(['LL', 'LR', 'RR', 'RL']);
+  // let {group, pair, score} = getGroup(['LL', 'LL', 'LR', 'RR', 'RR', 'RL']);
   // const {group, pair} = getGroup(['LL', 'LL', 'LL', 'LR', 'RR', 'RR', 'RR', 'RL']);
   const groupIndex = 1;
   const exercise = [pair[0], pair[1]];
@@ -55,13 +57,15 @@ const getExerciseSrting = (counter, count, maxTime) => {
   tracker[pair[0]]--;
   tracker[pair[1]]--;
   const startTime = new Date();
-  const nextChar = getNextChar(startTime, maxTime, group, groupIndex, tracker, count, exercise, maxFound);
+  const nextChar = getNextChar(startTime, maxTime, group, groupIndex, tracker, count, exercise, maxFound, score, score);
+  console.log('max score - ', nextChar[2]);
+  console.log('ave - ', ~~(nextChar[2] / nextChar[1].length))
   return nextChar[1];
 };
 
-const getNextChar = (startTime, maxTime, group, groupIndex, tracker, count, exercise, maxFound) => {
+const getNextChar = (startTime, maxTime, group, groupIndex, tracker, count, exercise, maxFound, score, maxScore) => {
   const time = new Date() - startTime;
-  if (time > maxTime || count === 0) return [true, maxFound];
+  if (time > maxTime || count === 0) return [true, maxFound, maxScore];
 
   tracker = Object.create(tracker);
   exercise = exercise.slice();
@@ -74,26 +78,35 @@ const getNextChar = (startTime, maxTime, group, groupIndex, tracker, count, exer
     const i = c < difference ? loopStart + c : c - difference;
     const bigramFirst = bigram[i][0][0];
     const bigramLast = bigram[i][0][1];
+    const bigramScore = bigram[i][1];
+    score = bigramScore + score;
 
     if (bigramFirst === lastChar && tracker[bigramLast] > 0) {
       exercise.push(bigramLast);
       count--;
       groupIndex = groupIndex === group.length - 1 ? 0 : groupIndex + 1;
       tracker[bigramLast]--;
-      maxFound = exercise.length >= maxFound.length ? exercise : maxFound;
-      let nextChar = getNextChar(startTime, maxTime, group, groupIndex, tracker, count, exercise, maxFound);
-      maxFound = nextChar[1].length >= maxFound.length ? nextChar[1] : maxFound;
+      if (score > maxScore) {
+        maxFound = exercise;
+        maxScore = score;
+      }
+      let nextChar = getNextChar(startTime, maxTime, group, groupIndex, tracker, count, exercise, maxFound, score, maxScore);
+      if (nextChar[2] > maxScore) {
+        maxFound = nextChar[1];
+        maxScore = nextChar[2];
+      }
       if (nextChar[0] === true) {
-        return [true, maxFound];
+        return [true, maxFound, maxScore];
       } else {
         exercise.pop();
         count++;
         groupIndex = groupIndex === 0 ? group.length - 1 : groupIndex - 1;
         tracker[bigramLast]++;
+        score = score - bigramScore;
       }
     }
   }
-  return [false, maxFound];
+  return [false, maxFound, maxScore];
 };
 
 module.exports = assembleString;
