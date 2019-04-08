@@ -1,5 +1,3 @@
-import Redux from 'redux';
-
 const exerciseReducer = (state = [], action) => {
   switch (action.type) {
     case 'SET_EXERCISE':

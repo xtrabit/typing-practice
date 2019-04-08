@@ -1,5 +1,3 @@
-import Redux from 'redux';
-
 const trackerReducer = (state = [], action) => {
   switch (action.type) {
     case 'CLEAR_TRACKER':

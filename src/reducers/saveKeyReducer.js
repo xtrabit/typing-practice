@@ -1,5 +1,3 @@
-import Redux from 'redux';
-
 const saveKeyReducer = (state = [], action) => {
   switch (action.type) {
     case 'SAVE_KEY':

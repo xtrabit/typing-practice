@@ -1,5 +1,3 @@
-import Redux from 'redux';
-
 const pressedKeysReducer = (state = null, action) => {
   switch (action.type) {
     case 'PRESS_KEY':
