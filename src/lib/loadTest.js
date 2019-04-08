@@ -2,7 +2,7 @@ const {letters} = require('./charSet.js');
 const assembleString = require('./initialTest.js');
 
 const loadTest = (data) => {
-  const max = 40;
+  const max = 15;
   const test = assembleString(max);
   return generateTest(test);
 };

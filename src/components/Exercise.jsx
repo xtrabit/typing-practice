@@ -1,6 +1,8 @@
 import React from 'react';
-import {loadTest} from '../lib/loadTest';
-import {letters} from '../lib/charSet';
+import { loadTest } from '../lib/loadTest';
+import { letters } from '../lib/charSet';
+import listenToKeys from '../lib/listenToKeys';
+import ViewExercise from './ViewExercise';
 
 class Exercise extends React.Component {
   constructor(props) {
@@ -18,12 +20,13 @@ class Exercise extends React.Component {
     this.end = 0;
 
     this.startExercise = this.startExercise.bind(this);
-    this.displayPressedKey = this.displayPressedKey.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
   componentDidUpdate(prevProps) {
+    console.log(this.props.tracker)
+    console.log(this.props.keys)
     if (prevProps.data !== this.props.data) {
       this.setState({loadedData: this.props.data}, () => {
         this.calcWpm();
@@ -34,48 +37,47 @@ class Exercise extends React.Component {
 
   startExercise() {
     const test = loadTest(this.state.loadedData);
-    this.setState({testString: test, index: 0});
-    this.clearExercise();
+    this.props.setExercise(test);
+    this.props.clearTracker();
+    this.setState({index: 0});
 
     if (!this.state.test) {
-      window.addEventListener('keydown', this.handleKeyDown);
-      window.addEventListener('keyup', this.handleKeyUp);
+      listenToKeys.start(this.handleKeyDown, this.handleKeyUp)
       this.setState({test: true, clear: false});
     }
   }
 
-  handleKeyUp(e) {
+  handleKeyUp() {
     this.start = new Date();
 
   }
 
   handleKeyDown(e) {
-    let {index, testString} = this.state;
+    let {index} = this.state;
+    let testString = this.props.exercise;
     if (index === testString.length) {
-      this.clearExercise();
       this.startExercise();
       return;
     }
     const pressedKey = e.key;
-    const expectedKey = this.state.testString[index];
-    let letter = document.getElementById('index' + this.state.index + expectedKey);
+    const expectedKey = testString[index];
 
     if (pressedKey === 'Escape') {
-      window.removeEventListener('keydown', this.handleKeyDown);
-      window.removeEventListener('keyup', this.handleKeyUp);
+      listenToKeys.stop();
       this.setState({test: false});
+      return;
     }
 
     this.end = new Date();
     this.delay = this.end - this.start;
-    console.log('CURRENT KEY [', pressedKey, '] transition time - ', this.delay);
+    // console.log('CURRENT KEY [', pressedKey, '] transition time - ', this.delay);
 
-    letters.includes(pressedKey) && this.displayPressedKey(pressedKey);
-
+    letters.includes(pressedKey) && this.props.press(pressedKey);
     if (pressedKey === expectedKey) {
-      letter.className = letter.className === 'missed'
-        ? letter.className = 'error'
-        : letter.className = 'hit';
+      const category = this.props.tracker[index] === 'missed'
+        ? 'error'
+        : 'hit';
+      this.props.updateTracker(category, index);
 
       index++;
       this.setState({index}, () => {
@@ -83,13 +85,12 @@ class Exercise extends React.Component {
       });
       pressedKey === ' ' && this.calcWpm();
 
-      if (index !== this.state.testString.length) {
-        const cursor = this.state.testString[index];
-        letter = document.getElementById('index' + index + cursor);
-        letter.className = 'cursor';
+      if (index !== testString.length) {
+        const cursor = testString[index];
+        this.props.updateTracker('cursor', index);
       }
     } else {
-      letter.className = 'missed';
+      this.props.updateTracker('missed', index);
     }
   }
 
@@ -114,10 +115,12 @@ class Exercise extends React.Component {
   }
 
   saveKey() {
-    let {index, testString} = this.state;
+    let { index } = this.state;
+    let testString = this.props.exercise;
     index--;
     if (index > 0 && index < testString.length) {
-      const className = document.getElementById('index' + index + testString[index]).className;
+      const className = this.props.tracker[index];
+      // const className = document.getElementById('index' + index + testString[index]).className;
       const key = {};
       key.letter = testString[index];
       key.after = testString[index - 1];
@@ -125,6 +128,8 @@ class Exercise extends React.Component {
       key.time = new Date();
       const data = [...this.state.data];
       data.push(key);
+      console.log('SAVING ------------------------------------')
+      this.props.saveKey(key)
       this.setState({data}, () => {
         if (index === testString.length - 1) {
           this.writeData();
@@ -134,20 +139,9 @@ class Exercise extends React.Component {
   }
 
   writeData() {
-    this.props.writeData(this.state.data, () => {
-      this.setState({data: []});
-    });
-  }
-
-  displayPressedKey(key) {
-    const pressed = document.getElementById(key);
-    const {className} = pressed;
-    if (!className.includes('pressed')) {
-      pressed.className = className + ' pressed';
-      setTimeout(() => {
-        pressed.className = className;
-      }, 250);
-    }
+    // this.props.writeData(this.state.data, () => {
+    //   this.setState({data: []});
+    // });
   }
 
   displayString(render) {
@@ -157,7 +151,9 @@ class Exercise extends React.Component {
         <span
           key={'k' + item + i}
           id={'index' + i + item}
-          className={i === 0 ? 'cursor' : 'regular'}
+          className={//i === 0 ? 'cursor' : 'regular'
+          this.props.tracker[i] ? this.props.tracker[i] : 'regular'
+        }
         >
           {item}
         </span>
@@ -175,7 +171,7 @@ class Exercise extends React.Component {
     return (
       <div className='exercise-wrapper'>
         <div id='exercise' className='exercise' onClick={this.startExercise}>
-          {this.displayString(!this.state.clear)}
+          <ViewExercise exercise={this.props.exercise} tracker={this.props.tracker} />
         </div>
       </div>
     );
