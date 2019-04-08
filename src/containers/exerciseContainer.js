@@ -7,13 +7,19 @@ import updateTracker from '../actions/updateTracker';
 import setExercise from '../actions/setExercise';
 import clearExercise from '../actions/clearExercise';
 import saveKey from '../actions/saveKey';
+import clearKeys from '../actions/clearSavedKeys';
+import setUser from '../actions/setUser';
+import loadData from '../actions/loadData';
+import addData from '../actions/addData';
+import writeData from '../actions/writeData';
 
 const mapStateToProps = state => {
   return {
-    // pressedKeys: state.pressedKeys,
+    user: state.user,
     exercise: state.exercise,
     tracker: state.tracker,
-    keys: state.keys
+    savedKeys: state.savedKeys,
+    data: state.data
   };
 };
 
@@ -23,12 +29,16 @@ const mapDispatchToProps = dispatch => {
       dispatch(pressKey(key));
       dispatch(depressKey(key));
     },
-    // depress: (key) => dispatch(depressKey(key)),
     clearTracker: () => dispatch(clearTracker()),
     updateTracker: (cat, ind) => dispatch(updateTracker(cat, ind)),
     setExercise: exe => dispatch(setExercise(exe)),
     clearExercise: () => dispatch(clearExercise()),
-    saveKey: (key) => dispatch(saveKey(key))
+    saveKey: key => dispatch(saveKey(key)),
+    setUser: user => dispatch(setUser(user)),
+    loadData: user => dispatch(loadData(user)),
+    addData: data => dispatch(addData(data)),
+    clearData: data => dispatch(clearKeys()),
+    writeData: (user, data) => dispatch(writeData(user, data))
   };
 };
 
