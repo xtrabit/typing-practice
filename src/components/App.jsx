@@ -1,9 +1,9 @@
 import React from 'react';
-import './styles.css';
+import '../styles/styles.css';
 import ViewBoard from './ViewBoard';
 import Exercise from '../containers/exerciseContainer';
 import listenToKeys from '../lib/listenToKeys';
-import Header from './Header';
+import Header from '../containers/headerContainer';
 
 const App = ({pressedKeys}) => (
   <div className='app-wrapper'>

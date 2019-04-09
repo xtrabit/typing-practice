@@ -1,4 +1,4 @@
-const setUser = (user  = 'anonymous') => {
+const setUser = user => {
   return {
     type: 'SET_USER',
     user

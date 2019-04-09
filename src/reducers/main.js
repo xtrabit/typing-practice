@@ -5,6 +5,7 @@ import tracker from './trackerReducer';
 import savedKeys from './saveKeyReducer';
 import user from './userReducer';
 import data from './exerciseDataReducer';
+import wpm from './wpmReducer';
 
 export default combineReducers({
   pressedKeys,
@@ -12,5 +13,6 @@ export default combineReducers({
   tracker,
   savedKeys,
   user,
-  data
+  data,
+  wpm
 });

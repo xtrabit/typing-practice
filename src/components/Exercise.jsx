@@ -11,7 +11,6 @@ class Exercise extends React.Component {
       testString: [],
       index: 0,
       test: false,
-      clear: false,
       data: [],
       loadedData: []
     };
@@ -25,25 +24,30 @@ class Exercise extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
+    if (this.state.loadedData.length === 0) {
+      this.props.loadData(this.props.user);
+    }
+    console.log('USER - ', this.props.user)
+    console.log('LOADED - ', this.state.loadedData)
     console.log(this.props.tracker)
-    console.log(this.props.keys)
+    console.log(this.props.savedKeys)
     if (prevProps.data !== this.props.data) {
       this.setState({loadedData: this.props.data}, () => {
-        this.calcWpm();
+        //this.calcWpm();
 
       });
     }
   }
 
   startExercise() {
-    const test = loadTest(this.state.loadedData);
+    const test = loadTest();
     this.props.setExercise(test);
     this.props.clearTracker();
     this.setState({index: 0});
 
     if (!this.state.test) {
       listenToKeys.start(this.handleKeyDown, this.handleKeyUp)
-      this.setState({test: true, clear: false});
+      this.setState({test: true});
     }
   }
 
@@ -111,7 +115,7 @@ class Exercise extends React.Component {
       const ave = count / (sum / 60000);
       wpm = Number.parseFloat((ave / 5).toFixed(1));
     }
-    this.props.setWpm(wpm);
+    // this.props.setWpm(wpm);
   }
 
   saveKey() {
@@ -132,7 +136,9 @@ class Exercise extends React.Component {
       this.props.saveKey(key)
       this.setState({data}, () => {
         if (index === testString.length - 1) {
-          this.writeData();
+          this.props.addData(this.props.savedKeys);
+          this.props.writeData(this.props.user, this.props.savedKeys);
+          this.props.clearData();
         }
       });
     }
@@ -158,12 +164,6 @@ class Exercise extends React.Component {
           {item}
         </span>
       )
-    });
-  }
-
-  clearExercise() {
-    this.setState({clear: true}, () => {
-      this.setState({clear: false});
     });
   }
 
