@@ -12,6 +12,7 @@ import setUser from '../actions/setUser';
 import loadData from '../actions/loadData';
 import addData from '../actions/addData';
 import writeData from '../actions/writeData';
+import setWpm from '../actions/setWpm';
 
 const mapStateToProps = state => {
   return {
@@ -38,7 +39,8 @@ const mapDispatchToProps = dispatch => {
     loadData: user => dispatch(loadData(user)),
     addData: data => dispatch(addData(data)),
     clearData: data => dispatch(clearKeys()),
-    writeData: (user, data) => dispatch(writeData(user, data))
+    writeData: (user, data) => dispatch(writeData(user, data)),
+    setWpm: wpm => dispatch(setWpm(wpm))
   };
 };
 
